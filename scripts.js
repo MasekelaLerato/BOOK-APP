@@ -23,7 +23,7 @@ const theme = {
        light: '10, 10, 20',
    }
    }
-
+//BOOKS TO BE DISPLAYED 
 // variables used to extract 36 books that will be displayed
 const fragment = document.createDocumentFragment()
 let startIndex= 0;  
@@ -65,6 +65,7 @@ function createBookPreview(book) {
 const booklist = document.querySelector('[data-list-items]') 
 booklist.appendChild(fragment)
 
+//SEARCH BUTTON
 //references to the search button and cancel button
 const searchButton = document.querySelector("[data-header-search]");
 const searchOverlay = document.querySelector("[data-search-overlay]");
@@ -90,41 +91,38 @@ settingsButton.addEventListener('click', () => {
 settingsCancelButton.addEventListener('click', () => {
   settingsOverlay.style.display = "none";
 });
+// THEME DISPLAY
+// Get references to the theme settings and save button elements
+const settingsTheme = document.querySelector('[data-settings-theme]');
+const themeSaveButton = document.querySelector("body > dialog:nth-child(5) > div > div > button.overlay__button.overlay__button_primary");
+
+// Add a click event listener to the save button
+themeSaveButton.addEventListener('click', (event) => {
+  event.preventDefault();
+
+  // Get the selected theme value
+  const selectedTheme = settingsTheme.value;
+
+  // Apply the selected theme's colors to the body
+  if (selectedTheme === 'day') {
+    document.body.style.setProperty('--color-dark', day.dark);
+    document.body.style.setProperty('--color-light', day.light);
+  } else if (selectedTheme === 'night') {
+    document.body.style.setProperty('--color-dark', night.dark);
+    document.body.style.setProperty('--color-light', night.light);
+  }
+
+  // Hide the settings overlay
+  document.querySelector("[data-settings-overlay]").style.display = "none";
+});
 
 
-
-
-//  // checks for the theme
-//  const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-//  function setTheme() {
-//     if (prefersDarkMode) {
-//       document.documentElement.style.setProperty('--color-dark', theme.night.dark);
-//       document.documentElement.style.setProperty('--color-light', theme.night.light);
-//     } else {
-//       document.documentElement.style.setProperty('--color-dark', theme.day.dark);
-//       document.documentElement.style.setProperty('--color-light', theme.day.light);
-//     }
-//   }
-//   // Initial setup
-// setTheme();
-
-// // Listen for changes in the CSS preference
-// window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-//   if (e.matches) {
-//     // User prefers dark mode
-//     setTheme();
-//   } else {
-//     // User prefers light mode
-//     setTheme();
-//   }
-// });
- /**
+/**
    * function that displays the search options of all genres and all the authors
-   * @param {param} selectElement = This parameter is expected to be a reference to an HTML <select> element. 
+   * @param {param} selectElement = This parameter is  a reference to an HTML <select> element. 
    * @param {object} data =  object that contains data used to populate the options within the <select> element. 
    */      
- function populateSelectDropdown(selectElement, data) {
+ function selectDropdown(selectElement, data) {
     for (const key in data) {
       const optionElement = document.createElement('option');
       optionElement.value = key;
@@ -137,8 +135,8 @@ settingsCancelButton.addEventListener('click', () => {
   const authorSelect = document.querySelector("[data-search-authors]");
   const genreSelect = document.querySelector("[data-search-genres]");
   
-  populateSelectDropdown(authorSelect, authors);
-  populateSelectDropdown(genreSelect, genres);
+  selectDropdown(authorSelect, authors);
+  selectDropdown(genreSelect, genres);
 
 /**
    * this function handles the display of book details when a book preview is clicked and hides them when the close button is clicked
@@ -213,5 +211,52 @@ showMoreButton.textContent = 'Show More';
 
 //
 
-
-
+ /**
+     * function for when user clicks on the book to preview infromation on the book
+     * @param {Event} event 
+     *
+     */
+ function bookPreviewHandler(event) {
+    // Find the clicked book by checking the event path
+    const clickedBook = findClickedBook(event);
+  
+    if (!clickedBook) {
+      return;
+    }
+  
+    // Display the book details in an overlay
+    displayBookDetails(clickedBook);
+  }
+  
+  function findClickedBook(event) {
+    const pathArray = Array.from(event.path || event.composedPath());
+  
+    for (const node of pathArray) {
+      const previewId = node.dataset.preview;
+  
+      if (previewId) {
+        const clickedBook = books.find(book => book.id === previewId);
+        if (clickedBook) {
+          return clickedBook;
+        }
+      }
+    }
+  
+    return null;
+  }
+  
+  function displayBookDetails(book) {
+    // Show book details overlay
+    html.preview.active.style.display = 'block';
+  
+    // Set book details
+    html.preview.blur.src = book.image;
+    html.preview.image.src = book.image;
+    html.preview.title.innerText = book.title;
+    html.preview.subtitle.innerText = `${authors[book.author]} (${new Date(book.published).getFullYear()})`;
+    html.preview.description.innerText = book.description;
+  }
+  
+  // Add click event listener to the book list
+  bookPreviewHandler();
+  
