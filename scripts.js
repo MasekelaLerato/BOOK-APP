@@ -288,3 +288,6 @@ function displayBookDetails(book) {
 
 // Add click event listener to the book list
 bookPreviewHandler();
+
+
+
