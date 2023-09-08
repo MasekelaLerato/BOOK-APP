@@ -43,7 +43,7 @@ const themeSaveButton = document.querySelector(
 themeSaveButton.addEventListener("click", (event) => {
   event.preventDefault();
 // Get the selected theme value
-  const selectedTheme = settingsTheme.value;
+  const selectedTheme = themeSettings.value;
 // Apply the selected theme's colors to the body
   if (selectedTheme === "day") {
     document.body.style.setProperty("--color-dark", theme.day.dark);
@@ -236,17 +236,28 @@ show.addEventListener("click", detailsToggle);
 /*SHOW MORE BUTTON*/
 // Get a reference to the "Show More" button
 const showMoreButton = document.querySelector("[data-list-button]");
+// Initialize startIndex and endIndex
+ startIndex = 0;
+ endIndex = 36; // You can adjust this number to control how many books are initially displayed
+
 // Add a click event listener to the "Show More" button
 showMoreButton.addEventListener("click", () => {
-  // Increment the start and end index to load more books
-  startIndex =0;
-  endIndex =36;
+  // Increment the startIndex and endIndex to load the next batch of books
+  startIndex = endIndex;
+  endIndex += 36; // Load the next 36 books; you can adjust this number
+
+  // Ensure endIndex does not exceed the total number of books
+  if (endIndex > books.length) {
+    endIndex = books.length;
+    showMoreButton.style.display = "none"; // Hide the button when all books are loaded
+  }
 
   const extracted = books.slice(startIndex, endIndex);
+
   // Create a document fragment to efficiently append elements
   const fragment = document.createDocumentFragment();
 
-  // Loop through the extracted books and create preview elements
+  // Loop through the extracted books and create preview elements for the next batch
   for (const book of extracted) {
     const preview = document.createElement("dl");
     preview.className = "preview";
@@ -275,72 +286,50 @@ showMoreButton.addEventListener("click", () => {
   const booklist1 = document.querySelector("[data-list-items]");
   booklist1.appendChild(fragment);
 });
+
 // Set the initial text for the "Show More" button
 showMoreButton.textContent = "Show More";
 
+/**
+ * Function to filter books based on user-selected filters
+ */
 
 /**
- * Handle the click event on a book preview to display book details.
- *
- * @param {Event} event - The click event.
+ * Function to filter books based on user-selected filters
  */
-function bookPreviewHandler(event) {
-  // Find the clicked book by checking the event path
-  const clickedBook = findClickedBook(event);
+function filterBooks() {
+  const formData = new FormData(document.querySelector("[data-search-form]"));
+  const filters = Object.fromEntries(formData);
+  const result = [];
 
-  if (!clickedBook) {
-    return;
-  }
+  for (const book of matches) {
+    const titleMatch = filters.title.trim() === '' || book.title.toLowerCase().includes(filters.title.toLowerCase());
+    const authorMatch = filters.author === 'any' || book.author === filters.author;
+    
+    // Modified genreMatch to check if the selected genre is in the book's genres array
+    const genreMatch = filters.genre === 'any' || book.genres.includes(filters.genre);
 
-  // Display the book details in an overlay
-  displayBookDetails(clickedBook);
-}
-
-/**
- * Find the clicked book based on the event target's dataset.preview attribute.
- *
- * @param {Event} event - The click event.
- * @returns {object|null} - The clicked book object or null if not found.
- */
-function findClickedBook(event) {
-  const pathArray = Array.from(event.path || event.composedPath());
-
-  for (const node of pathArray) {
-    const previewId = node.dataset.preview;
-
-    if (previewId) {
-      // Find the book in the 'books' array based on the preview ID
-      const clickedBook = books.find((book) => book.id === previewId);
-      if (clickedBook) {
-        return clickedBook;
-      }
+    if (titleMatch && authorMatch && genreMatch) {
+      result.push(book);
     }
   }
 
-  return null;
+  // Handle displaying the filtered books in result array
+  // Assuming you have a function to do this
+  displayBooks(result);
+
+  // Show/hide a message based on the filtered result
+  const messageElement = document.querySelector("[data-list-message]");
+  if (result.length === 0) {
+    messageElement.classList.add('list__message_show');
+  } else {
+    messageElement.classList.remove('list__message_show');
+  }
 }
 
-/**
- * Display book details in an overlay based on the provided book object.
- *
- * @param {object} book - The book object containing book details.
- */
-function displayBookDetails(book) {
-  // Show book details overlay
-  html.preview.active.style.display = "block";
-
-  // Set book details in the overlay elements
-  html.preview.blur.src = book.image;
-  html.preview.image.src = book.image;
-  html.preview.title.innerText = book.title;
-  html.preview.subtitle.innerText = `${authors[book.author]} (${new Date(
-    book.published
-  ).getFullYear()})`;
-  html.preview.description.innerText = book.description;
-}
-
-// Add click event listener to the book list
-bookPreviewHandler();
-
-
+// Event listener for form submission
+document.querySelector("[data-search-form]").addEventListener("submit", function (event) {
+  event.preventDefault();
+  filterBooks();
+});
 
