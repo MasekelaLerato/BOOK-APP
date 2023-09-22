@@ -42,19 +42,41 @@ const themeSaveButton = document.querySelector(
 // Add a click event listener to the save button
 themeSaveButton.addEventListener("click", (event) => {
   event.preventDefault();
-// Get the selected theme value
+  // Get the selected theme value
   const selectedTheme = themeSettings.value;
-// Apply the selected theme's colors to the body
-  if (selectedTheme === "day") {
+ 
+   // Apply the selected theme's colors to the body
+   if (selectedTheme === "day") {
     document.body.style.setProperty("--color-dark", theme.day.dark);
     document.body.style.setProperty("--color-light", theme.day.light);
   } else if (selectedTheme === "night") {
     document.body.style.setProperty("--color-dark", theme.night.dark);
     document.body.style.setProperty("--color-light", theme.night.light);
   }
-// Hide the settings overlay
+// Save the selected theme in local storage
+   localStorage.setItem("selectedTheme", selectedTheme);
+  // Hide the settings overlay
   document.querySelector("[data-settings-overlay]").style.display = "none";
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  const savedTheme = localStorage.getItem("selectedTheme");
+
+  if (savedTheme) {
+    // Apply the saved theme's colors to the body
+    if (savedTheme === "day") {
+      document.body.style.setProperty("--color-dark", theme.day.dark);
+      document.body.style.setProperty("--color-light", theme.day.light);
+    } else if (savedTheme === "night") {
+      document.body.style.setProperty("--color-dark", theme.night.dark);
+      document.body.style.setProperty("--color-light", theme.night.light);
+    }
+
+    // Set the selected theme in your theme settings dropdown
+    themeSettings.value = savedTheme;
+  }
+});
+
 
 /*BOOKS TO BE DISPLAYED*/
 // variables used to extract 36 books that will be displayed
@@ -238,7 +260,7 @@ show.addEventListener("click", detailsToggle);
 const showMoreButton = document.querySelector("[data-list-button]");
 // Initialize startIndex and endIndex
  startIndex = 0;
- endIndex = 36; // You can adjust this number to control how many books are initially displayed
+ endIndex += 36; // You can adjust this number to control how many books are initially displayed
 
 // Add a click event listener to the "Show More" button
 showMoreButton.addEventListener("click", () => {
@@ -290,46 +312,46 @@ showMoreButton.addEventListener("click", () => {
 // Set the initial text for the "Show More" button
 showMoreButton.textContent = "Show More";
 
-/**
- * Function to filter books based on user-selected filters
- */
 
-/**
- * Function to filter books based on user-selected filters
- */
-function filterBooks() {
-  const formData = new FormData(document.querySelector("[data-search-form]"));
-  const filters = Object.fromEntries(formData);
-  const result = [];
 
-  for (const book of matches) {
-    const titleMatch = filters.title.trim() === '' || book.title.toLowerCase().includes(filters.title.toLowerCase());
-    const authorMatch = filters.author === 'any' || book.author === filters.author;
+// /**
+//  * Function to filter books based on user-selected filters
+//  */
+// function filterBooks() {
+//   const formData = new FormData(document.querySelector("[data-search-form]"));
+//   const filters = Object.fromEntries(formData);
+//   const result = [];
+
+//   for (const book of matches) {
+//     const titleMatch = filters.title.trim() === '' || book.title.toLowerCase().includes(filters.title.toLowerCase());
+//     const authorMatch = filters.author === 'any' || book.author === filters.author;
     
-    // Modified genreMatch to check if the selected genre is in the book's genres array
-    const genreMatch = filters.genre === 'any' || book.genres.includes(filters.genre);
+//     // Modified genreMatch to check if the selected genre is in the book's genres array
+//     const genreMatch = filters.genre === 'any' || book.genres.includes(filters.genre);
 
-    if (titleMatch && authorMatch && genreMatch) {
-      result.push(book);
-    }
-  }
+//     if (titleMatch && authorMatch && genreMatch) {
+//       result.push(book);
+//     }
+//   }
 
-  // Handle displaying the filtered books in result array
-  // Assuming you have a function to do this
-  displayBooks(result);
+//   // Handle displaying the filtered books in result array
+// displayBooks(result);
 
-  // Show/hide a message based on the filtered result
-  const messageElement = document.querySelector("[data-list-message]");
-  if (result.length === 0) {
-    messageElement.classList.add('list__message_show');
-  } else {
-    messageElement.classList.remove('list__message_show');
-  }
-}
+//   // Show/hide a message based on the filtered result
+//   const messageElement = document.querySelector("[data-list-message]");
+//   if (result.length === 0) {
+//     messageElement.classList.add('list__message_show');
+//   } else {
+//     messageElement.classList.remove('list__message_show');
+//   }
+// }
 
-// Event listener for form submission
-document.querySelector("[data-search-form]").addEventListener("submit", function (event) {
-  event.preventDefault();
-  filterBooks();
-});
+// // Event listener for form submission
+// document.querySelector("[data-search-form]").addEventListener("submit", function (event) {
+//   event.preventDefault();
+//   filterBooks();
+// });
+
+
+
 
