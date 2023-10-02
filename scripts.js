@@ -1,3 +1,5 @@
+
+
 //This line imports variables from the data.js module.
 import { authors, genres, books, BOOKS_PER_PAGE } from "./data.js";
 
@@ -147,7 +149,7 @@ searchButton.addEventListener("click", () => {
   searchOverlay.style.display = "block";
 });
 // Add a click event listener to hide the search overlay
-searchCancelButton.addEventListener("click", () => {
+ searchCancelButton.addEventListener("click", () => {
    // When the cancel button within the search overlay is clicked, hide the overlay
   searchOverlay.style.display = "none";
 });
@@ -198,8 +200,6 @@ const genreSelect = document.querySelector("[data-search-genres]");
 // loads the author and genre dropdowns using the selectDropdown function
 selectDropdown(authorSelect, authors);
 selectDropdown(genreSelect, genres);
-
-
 
 /**
  * this function handles the display of book details when a book preview is clicked and hides them when the close button is clicked
@@ -313,44 +313,30 @@ showMoreButton.addEventListener("click", () => {
 showMoreButton.textContent = "Show More";
 
 
+/*FILTERING*/
+/**
+ * Function to filter books based on user-selected filters
+ */ 
+function filterBooks() {
+  const formData = new FormData(document.querySelector("[data-search-form]"));
+  const filters = Object.fromEntries(formData);
+  const result = [];
 
-// /**
-//  * Function to filter books based on user-selected filters
-//  */
-// function filterBooks() {
-//   const formData = new FormData(document.querySelector("[data-search-form]"));
-//   const filters = Object.fromEntries(formData);
-//   const result = [];
+  for (const book of matches) {
+    const titleMatch = filters.title.trim() === '' || book.title.toLowerCase().includes(filters.title.toLowerCase());
+    const authorMatch = filters.author === 'any' || book.author === filters.author;
 
-//   for (const book of matches) {
-//     const titleMatch = filters.title.trim() === '' || book.title.toLowerCase().includes(filters.title.toLowerCase());
-//     const authorMatch = filters.author === 'any' || book.author === filters.author;
-    
-//     // Modified genreMatch to check if the selected genre is in the book's genres array
-//     const genreMatch = filters.genre === 'any' || book.genres.includes(filters.genre);
+     // Genre filter logic
+     const genreMatch = filters.genre === 'any' || book.genres.includes(filters.genre);
 
-//     if (titleMatch && authorMatch && genreMatch) {
-//       result.push(book);
-//     }
-//   }
+     if (titleMatch && authorMatch && genreMatch) {
+          result.push(book);
+        }
+           // Handle displaying the filtered books
+  displayBooks(result);
+}
+}
 
-//   // Handle displaying the filtered books in result array
-// displayBooks(result);
-
-//   // Show/hide a message based on the filtered result
-//   const messageElement = document.querySelector("[data-list-message]");
-//   if (result.length === 0) {
-//     messageElement.classList.add('list__message_show');
-//   } else {
-//     messageElement.classList.remove('list__message_show');
-//   }
-// }
-
-// // Event listener for form submission
-// document.querySelector("[data-search-form]").addEventListener("submit", function (event) {
-//   event.preventDefault();
-//   filterBooks();
-// });
 
 
 
