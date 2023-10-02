@@ -3,7 +3,7 @@
 ##Lerato Masekela
 
 ##Link to my presentation 
-[https://www.figma.com/file/sjyC3hRMs3kr76fy4ZdFlm/Untitled?type=design&node-id=0%3A1&mode=design&t=T5v9zz7ZNEq3FjCF-1]
+[figma](https://www.figma.com/file/sjyC3hRMs3kr76fy4ZdFlm/Untitled?type=design&node-id=0%3A1&mode=design&t=T5v9zz7ZNEq3FjCF-1)
 
 This is my final capstone project for IWA. It is a web book app that should be able to do the following:
 
