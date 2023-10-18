@@ -1,5 +1,3 @@
-
-
 //This line imports variables from the data.js module.
 import { authors, genres, books, BOOKS_PER_PAGE } from "./data.js";
 
@@ -92,87 +90,144 @@ const extracted = books.slice(startIndex, endIndex);
  * @returns {HTMLElement} - The created book preview element.
  *  @param {object} book = object with book properties
  */
-function createBookPreview(book) {
-  // Create a <dl> element to represent the book preview
-  const preview = document.createElement("dl");
-  preview.className = "preview";
-  // Set dataset attributes for book information
-  preview.dataset.id = book.id;
-  preview.dataset.title = book.title;
-  preview.dataset.image = book.image;
-  preview.dataset.subtitle = `${authors[book.author]} (${new Date(
-    book.published
-  ).getFullYear()})`;
-  preview.dataset.description = book.description;
-  preview.dataset.genre = book.genres;
-// Create HTML structure for the book preview
-  preview.innerHTML = /*html*/ `
-       <div>
-         <image class='preview__image' src="${book.image}" alt="book pic"/>
-       </div>
-       <div class='preview__info'>
-         <dt class='preview__title'>${book.title}<dt>
-         <dt class='preview__author'> By ${authors[book.author]}</dt>
-       </div>`;
+function createBookPreview(bookData) {
+  // Create the book preview element
+  const bookPreview = document.createElement("dl");
+  bookPreview.className = "preview";
+  bookPreview.dataset.id = bookData.id;
+  bookPreview.dataset.title = bookData.title;
+  bookPreview.dataset.image = bookData.image;
+  bookPreview.dataset.subtitle = `${authors[bookData.author]} (${new Date(bookData.published).getFullYear()})`;
+  bookPreview.dataset.description = bookData.description;
+  bookPreview.dataset.genre = bookData.genres;
 
-  return preview;
+  // Create the image element
+  const image = document.createElement("img");
+  image.className = "preview__image";
+  image.src = bookData.image;
+  image.alt = "book pic";
+
+  // Create the info element
+  const info = document.createElement("div");
+  info.className = "preview__info";
+
+  const title = document.createElement("dt");
+  title.className = "preview__title";
+  title.textContent = bookData.title;
+
+  const author = document.createElement("dt");
+  author.className = "preview__author";
+  author.textContent = `By ${authors[bookData.author]}`;
+
+  // Append elements to the book preview
+  info.appendChild(title);
+  info.appendChild(author);
+  bookPreview.appendChild(image);
+  bookPreview.appendChild(info);
+
+  return bookPreview;
 }
+
 
 /**
  * code loops through the extracted array of books, creates a preview element for each book using the createBookPreview function 
  * appends these elements to the booklist element, which presumably is a container for displaying book previews. 
  * he result is that the book previews are added to the HTML, and users can see them on the webpage.
  */
-// Loop through the extracted books and create book previews for each one
-for (let i = 0; i < extracted.length; i++) {
-    // Create a book preview element using the createBookPreview function
-  const bookPreview = createBookPreview(extracted[i]);
-  // Append the book preview to the fragment
-  fragment.appendChild(bookPreview);
+function displayBooks() {
+  for (const bookData of extracted) {
+      const bookPreview = createBookPreview(bookData);
+      fragment.appendChild(bookPreview);
+  }
+
+  const bookList = document.querySelector("[data-list-items]");
+  bookList.innerHTML = ''; // Clear previous content
+  bookList.appendChild(fragment);
 }
-//'book' variable holds a reference to the element that will contain the book previews.
-const book = document.querySelector("[data-list-items]");
-book.appendChild(fragment);
+
+displayBooks();
+
 
 
 /**
  * SEARCH BUTTON
  * sets up functionality for showing and hiding a search overlay when certain elements on a web page are clicked.
  */
-//Get references to HTML elements using their data attributes
-const searchButton = document.querySelector("[data-header-search]");
-const searchOverlay = document.querySelector("[data-search-overlay]");
-const searchCancelButton = document.querySelector("[data-search-cancel]");
-// Add a click event listener to show the search overlay
-searchButton.addEventListener("click", () => {
-// When the search button is clicked, display the search overlay
-  searchOverlay.style.display = "block";
-});
-// Add a click event listener to hide the search overlay
- searchCancelButton.addEventListener("click", () => {
-   // When the cancel button within the search overlay is clicked, hide the overlay
-  searchOverlay.style.display = "none";
-});
+/**
+ * Represents a search overlay that can be shown and hidden.
+ */
+class SearchOverlay {
+  /**
+   * Create a new SearchOverlay.
+   * @param {string} searchButtonSelector - Selector for the search button element.
+   * @param {string} searchOverlaySelector - Selector for the search overlay element.
+   * @param {string} cancelButtonSelector - Selector for the cancel button within the search overlay.
+   */
+  constructor(searchButtonSelector, searchOverlaySelector, cancelButtonSelector) {
+    this.searchButton = document.querySelector(searchButtonSelector);
+    this.searchOverlay = document.querySelector(searchOverlaySelector);
+    this.cancelButton = document.querySelector(cancelButtonSelector);
+
+    // Add event listeners to handle showing and hiding the search overlay
+    this.searchButton.addEventListener("click", this.showSearchOverlay.bind(this));
+    this.cancelButton.addEventListener("click", this.hideSearchOverlay.bind(this));
+  }
+
+  /**
+   * Show the search overlay when the search button is clicked.
+   */
+  showSearchOverlay() {
+    this.searchOverlay.style.display = "block";
+  }
+
+  /**
+   * Hide the search overlay when the cancel button is clicked.
+   */
+  hideSearchOverlay() {
+    this.searchOverlay.style.display = "none";
+  }
+}
+
+// Create an instance of the SearchOverlay class and specify element selectors
+const searchOverlay = new SearchOverlay("[data-header-search]", "[data-search-overlay]", "[data-search-cancel]");
+
 
 
 /**
  * SETTINGS
  *  handles the behavior of the settings button and settings cancel button
  */
-//references to the settings button
-const settingsButton = document.querySelector("[data-header-settings]");
-const settingsOverlay = document.querySelector("[data-settings-overlay]");
-const settingsCancelButton = document.querySelector("[data-settings-cancel]");
-// Add a click event listener to the settings button
-settingsButton.addEventListener("click", () => {
-// When the settings button is clicked, display the settings overlay
-  settingsOverlay.style.display = "block";
-});
-// Add a click event listener to the settings cancel button
-settingsCancelButton.addEventListener("click", () => {
- // When the settings cancel button is clicked, hide the settings overlay 
-  settingsOverlay.style.display = "none";
-});
+/**
+ * Represents a Settings Manager that handles the behavior of the settings button and cancel button.
+ */
+class SettingsManager {
+  constructor() {
+    this.settingsButton = document.querySelector("[data-header-settings]");
+    this.settingsOverlay = document.querySelector("[data-settings-overlay]");
+    this.settingsCancelButton = document.querySelector("[data-settings-cancel]");
+
+    this.settingsButton.addEventListener("click", this.showSettingsOverlay.bind(this));
+    this.settingsCancelButton.addEventListener("click", this.hideSettingsOverlay.bind(this));
+  }
+
+  /**
+   * Show the settings overlay when the settings button is clicked.
+   */
+  showSettingsOverlay() {
+    this.settingsOverlay.style.display = "block";
+  }
+
+  /**
+   * Hide the settings overlay when the cancel button is clicked.
+   */
+  hideSettingsOverlay() {
+    this.settingsOverlay.style.display = "none";
+  }
+}
+
+// Create an instance of the SettingsManager class
+const settingsManager = new SettingsManager();
+
 
 
 /**
@@ -201,72 +256,82 @@ const genreSelect = document.querySelector("[data-search-genres]");
 selectDropdown(authorSelect, authors);
 selectDropdown(genreSelect, genres);
 
+
 /**
- * this function handles the display of book details when a book preview is clicked and hides them when the close button is clicked
- * @param {Event} event = The click event that triggered the function.
+ * Object for managing the display and hiding of book details.
  */
-const detailsToggle = (event) => {
-  // Get references to the elements that display book details
-  const overlay1 = document.querySelector("[data-list-active]");
-  const title = document.querySelector("[data-list-title]");
-  const subtitle = document.querySelector("[data-list-subtitle]");
-  const description = document.querySelector("[data-list-description]");
-  const image1 = document.querySelector("[data-list-image]");
-  const imageblur = document.querySelector("[data-list-blur]");
+const BookDetailsManager = {
+  elements: {
+    overlay: document.querySelector("[data-list-active]"),
+    title: document.querySelector("[data-list-title]"),
+    subtitle: document.querySelector("[data-list-subtitle]"),
+    description: document.querySelector("[data-list-description]"),
+    image: document.querySelector("[data-list-image]"),
+    imageBlur: document.querySelector("[data-list-blur]"),
+    close: document.querySelector("[data-list-close]"),
+    show: document.querySelector("[data-list-items]"),
+  },
 
-  // Check if the clicked element has specific dataset attributes
-  if (event.target.dataset.id) {
-    // Display the book details overlay
-    overlay1.style.display = "block";
-  }
+  /**
+   * Show book details when a book preview is clicked.
+   * @param {Event} event - The click event that triggered the function.
+   */
+  detailsToggle(event) {
+    const { elements } = this;
+    const { dataset } = event.target;
 
-  // Check if the clicked element has a dataset description attribute
-  if (event.target.dataset.description) {
-    // Set the description text to the clicked book's description
-    description.innerHTML = event.target.dataset.description;
-  }
+    if (dataset.id) {
+      elements.overlay.style.display = "block";
+    }
 
-  // Check if the clicked element has a dataset subtitle attribute
-  if (event.target.dataset.subtitle) {
-    // Set the subtitle text to the clicked book's subtitle
-    subtitle.innerHTML = event.target.dataset.subtitle;
-  }
+    if (dataset.description) {
+      elements.description.innerHTML = dataset.description;
+    }
 
-  // Check if the clicked element has a dataset title attribute
-  if (event.target.dataset.title) {
-    // Set the title text to the clicked book's title
-    title.innerHTML = event.target.dataset.title;
-  }
+    if (dataset.subtitle) {
+      elements.subtitle.innerHTML = dataset.subtitle;
+    }
 
-  // Check if the clicked element has a dataset image attribute
-  if (event.target.dataset.image) {
-    // Set the image source to the clicked book's image
-    image1.setAttribute("src", event.target.dataset.image);
-    imageblur.setAttribute("src", event.target.dataset.image);
-  }
+    if (dataset.title) {
+      elements.title.innerHTML = dataset.title;
+    }
+
+    if (dataset.image) {
+      elements.image.setAttribute("src", dataset.image);
+      elements.imageBlur.setAttribute("src", dataset.image);
+    }
+  },
+
+  /**
+   * Hide book details when the close button is clicked.
+   */
+  hideDetails() {
+    this.elements.overlay.style.display = "none";
+  },
+
+  /**
+   * Initialize the book details manager by adding event listeners.
+   */
+  init() {
+    this.elements.show.addEventListener("click", this.detailsToggle.bind(this));
+    this.elements.close.addEventListener("click", this.hideDetails.bind(this));
+  },
 };
-// close is a variable that holds a reference to the close button element for book details.
-const close = document.querySelector("[data-list-close]");
-close.addEventListener("click", () => {
-  document.querySelector("[data-list-active]").style.display = "none";
-});
-//show is a variable that holds a reference to the element that will be clicked to show the book details.
-const show = document.querySelector("[data-list-items]");
-show.addEventListener("click", detailsToggle);
+
+// Initialize the BookDetailsManager
+BookDetailsManager.init();
+
 
 
 /*SHOW MORE BUTTON*/
 // Get a reference to the "Show More" button
 const showMoreButton = document.querySelector("[data-list-button]");
-// Initialize startIndex and endIndex
- startIndex = 0;
- endIndex += 36; // You can adjust this number to control how many books are initially displayed
-
+ 
 // Add a click event listener to the "Show More" button
 showMoreButton.addEventListener("click", () => {
   // Increment the startIndex and endIndex to load the next batch of books
   startIndex = endIndex;
-  endIndex += 36; // Load the next 36 books; you can adjust this number
+  endIndex += 36; // Load the next 36 books
 
   // Ensure endIndex does not exceed the total number of books
   if (endIndex > books.length) {
@@ -314,30 +379,37 @@ showMoreButton.textContent = "Show More";
 
 
 /*FILTERING*/
-/**
- * Function to filter books based on user-selected filters
- */ 
-function filterBooks() {
-  const formData = new FormData(document.querySelector("[data-search-form]"));
-  const filters = Object.fromEntries(formData);
-  const result = [];
+  /**
+   * Function to handle filtering and displaying books based on user-selected filters.
+   */
+ 
 
-  for (const book of matches) {
-    const titleMatch = filters.title.trim() === '' || book.title.toLowerCase().includes(filters.title.toLowerCase());
-    const authorMatch = filters.author === 'any' || book.author === filters.author;
-
-     // Genre filter logic
-     const genreMatch = filters.genre === 'any' || book.genres.includes(filters.genre);
-
-     if (titleMatch && authorMatch && genreMatch) {
-          result.push(book);
-        }
-           // Handle displaying the filtered books
-  displayBooks(result);
-}
-}
-
-
-
-
-
+  function filterBooks() {
+    // Get form data from the search form
+    const formData = new FormData(document.querySelector("[data-search-form]"));
+    const filters = Object.fromEntries(formData);
+  
+    // Define the result array to store filtered books
+    const result = [];
+  
+    for (const book of matches) {
+      // Check if the book's title matches the filter (case-insensitive)
+      const titleMatch =
+        filters.title.trim() === '' || book.title.toLowerCase().includes(filters.title.toLowerCase());
+  
+      // Check if the book's author matches the filter or 'any' is selected
+      const authorMatch = filters.author === 'any' || book.author === filters.author;
+  
+      // Genre filter logic
+      const genreMatch = filters.genre === 'any' || book.genres.includes(filters.genre);
+  
+      // If all filters match, add the book to the result
+      if (titleMatch && authorMatch && genreMatch) {
+        result.push(book);
+      }
+    }
+  
+    // Handle displaying the filtered books
+    displayBooks(result);
+  }
+  
