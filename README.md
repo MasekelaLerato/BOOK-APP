@@ -1,6 +1,8 @@
 ##Link to my presentation 
 [figma](https://www.figma.com/file/sjyC3hRMs3kr76fy4ZdFlm/Untitled?type=design&node-id=0%3A1&mode=design&t=T5v9zz7ZNEq3FjCF-1)
 
+For this project I use CSS,JavaScript and HTML
+
 This is my final capstone project. It is a web book app that should be able to do the following:
 
 -As a user, I want to view a list of book previews, by title and author, so that I can discover new books to read.
@@ -18,3 +20,5 @@ This is my final capstone project. It is a web book app that should be able to d
 -As a user, I want to filter books by genre so that I can find books to read in genres that I enjoy.
 
 -As a user, I want to toggle between dark and light modes so that I can use the app comfortably at night.
+
+
