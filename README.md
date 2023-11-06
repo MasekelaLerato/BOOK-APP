@@ -48,3 +48,10 @@ The project's file structure is organized as follows:
 
 - `styles.css`: The CSS file used for styling the application and making it visually appealing.
 
+##Presentation
+
+
+-  [figma](https://www.figma.com/file/sjyC3hRMs3kr76fy4ZdFlm/Untitled?type=design&node-id=0%3A1&mode=design&t=T5v9zz7ZNEq3FjCF-1
+
+
+
