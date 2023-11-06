@@ -22,7 +22,7 @@ Book Connect is an easy-to-use application with the following features:
 
 Please keep in mind that some features are still a work in progress, and we appreciate your patience as we continue to improve the application.
 
-## Changes
+
 
 
 ## Resources Used
