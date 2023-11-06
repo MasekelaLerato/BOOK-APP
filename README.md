@@ -1,24 +1,50 @@
-##Link to my presentation 
-[figma](https://www.figma.com/file/sjyC3hRMs3kr76fy4ZdFlm/Untitled?type=design&node-id=0%3A1&mode=design&t=T5v9zz7ZNEq3FjCF-1)
+# Book Connect App
 
-For this project I use CSS,JavaScript and HTML
+Book Connect is an online platform that allows users to discover and explore a library of books. Users can search for specific books, access detailed information about them, and even customize the visual style of the application. 
 
-This is my final capstone project. It is a web book app that should be able to do the following:
+## About
 
--As a user, I want to view a list of book previews, by title and author, so that I can discover new books to read.
+This is my capstone project for Interactive Web Apps at  [CodeSpace](https://www.codespace.co.za/), where I had the opportunity to learn and apply web development skills.
 
--As a user, I want an image associated with all book previews so that I can recognize a book by the cover even if I forgot the name.
+## Usage
 
--As a user, I want to have the option of reading a summary of the book so that I can decide whether I want to read it.
+Book Connect is an easy-to-use application with the following features:
 
--As a user, I want to have the option of seeing the date that a book was published so that I can determine how easy it is to obtain second-hand.
+1. Click on the search button to start exploring books. (Please note that the search feature is under development and may not work completely yet.)
 
--As a user, I want to find books based on specific text phrases so that I don’t need to remember the entire title of a book.
+2. Use the search options to filter books by author or genre. (As mentioned earlier, the search feature is under development.)
 
--As a user, I want to filter books by author so that I can find books to read by authors that I enjoy.
+3. Click on a book preview to see its details.
 
--As a user, I want to filter books by genre so that I can find books to read in genres that I enjoy.
+4. Toggle between the day and night themes for a different visual experience.
 
--As a user, I want to toggle between dark and light modes so that I can use the app comfortably at night.
+5. Click the "Show More" button to load additional book previews.
 
+Please keep in mind that some features are still a work in progress, and we appreciate your patience as we continue to improve the application.
+
+## Changes
+
+
+## Resources Used
+
+Here is a list of resources and tools used in the development of the Book Connect App:
+
+- Styling: [CSS](https://developer.mozilla.org/en-US/docs/Web/CSS)
+- Version Control: [Git](https://git-scm.com/)
+- Code Hosting: [GitHub](https://github.com/)
+- Text Editor: [Visual Studio Code](https://code.visualstudio.com/)
+- Documentation: [Markdown](https://www.markdownguide.org/)
+
+
+## File Structure
+
+The project's file structure is organized as follows:
+
+- `data.js`: This file contains book information and data used by the application.
+
+- `script.js`: The core functionality of the application is implemented in this JavaScript file. It includes functions for searching, displaying book details, and other interactive features.
+
+- `index.html`: This is the main entry point of the web application, where the HTML structure is defined and where the application is loaded.
+
+- `styles.css`: The CSS file used for styling the application and making it visually appealing.
 
